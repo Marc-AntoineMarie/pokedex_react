@@ -8,6 +8,8 @@ import {
   useMotionTemplate,
   AnimatePresence,
 } from 'framer-motion'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import PokeballLoader from '../components/PokeballLoader'
 import api from '../services/api'
 
 /* ── Palette ─────────────────────────────────────────── */
@@ -102,6 +104,7 @@ export default function PokeDetails() {
   const [pokemon, setPokemon] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState(null)
+  const [backHover, setBackHover] = useState(false)
 
   /* mouse parallax on hero artwork */
   const mx = useMotionValue(0)
@@ -126,11 +129,7 @@ export default function PokeDetails() {
       .catch(() => { setError('Pokémon introuvable.'); setLoading(false) })
   }, [id])
 
-  if (loading) return (
-    <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-label-2)', fontSize: '0.9rem' }}>
-      Chargement…
-    </div>
-  )
+  if (loading) return <PokeballLoader label="Recherche dans le Pokédex…" />
   if (error) return (
     <div style={{ padding: '12px 16px', background: '#fff5f5', borderRadius: 12, color: 'var(--color-destructive)', fontSize: '0.875rem' }}>
       {error}
@@ -147,9 +146,34 @@ export default function PokeDetails() {
     <div style={{ maxWidth: 700, margin: '0 auto' }}>
 
       {/* Back */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}>
-        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 20, fontSize: '0.875rem', fontWeight: 500, color: 'var(--color-accent)' }}>
-          ← Retour
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }} style={{ marginBottom: 20 }}>
+        <Link
+          to="/"
+          onMouseEnter={() => setBackHover(true)}
+          onMouseLeave={() => setBackHover(false)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '8px 16px',
+            borderRadius: 980,
+            background: backHover ? 'var(--color-surface-3)' : 'var(--color-surface)',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06)',
+            color: 'var(--color-label)',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            transition: 'background 180ms ease',
+            opacity: 1,
+          }}
+        >
+          <motion.span
+            animate={{ x: backHover ? -3 : 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            style={{ display: 'inline-flex', alignItems: 'center' }}
+          >
+            <ArrowLeftIcon width={16} height={16} />
+          </motion.span>
+          <span>Retour</span>
         </Link>
       </motion.div>
 

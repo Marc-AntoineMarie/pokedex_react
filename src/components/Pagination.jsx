@@ -1,7 +1,11 @@
+import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons'
 import { motion } from 'framer-motion'
 
 function Pagination({ page, onPrev, onNext, disablePrev, disableNext }) {
   const btn = (disabled) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 6,
     padding: '9px 20px',
     borderRadius: 'var(--r-pill)',
     background: disabled ? 'var(--color-surface-2)' : 'var(--color-accent)',
@@ -28,7 +32,7 @@ function Pagination({ page, onPrev, onNext, disablePrev, disableNext }) {
         disabled={disablePrev}
         style={btn(disablePrev)}
       >
-        ← Précédent
+        <ArrowLeftIcon width={15} height={15} /> Précédent
       </motion.button>
 
       <span style={{ fontSize: '0.875rem', color: 'var(--color-label-2)', minWidth: 56, textAlign: 'center' }}>
@@ -41,7 +45,7 @@ function Pagination({ page, onPrev, onNext, disablePrev, disableNext }) {
         disabled={disableNext}
         style={btn(disableNext)}
       >
-        Suivant →
+        Suivant <ArrowRightIcon width={15} height={15} />
       </motion.button>
     </div>
   )

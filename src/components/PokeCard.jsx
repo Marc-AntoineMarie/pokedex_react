@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ArrowRightIcon } from '@radix-ui/react-icons'
 import {
   motion,
   useMotionValue,
@@ -32,6 +33,7 @@ const typePalette = {
 export default function PokeCard({ pokemon }) {
   const ref = useRef(null)
   const [hovered, setHovered] = useState(false)
+  const [btnHover, setBtnHover] = useState(false)
 
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
@@ -164,13 +166,30 @@ export default function PokeCard({ pokemon }) {
             <Link
               to={`/poke/${pokemon.id}`}
               onClick={e => e.stopPropagation()}
+              onMouseEnter={() => setBtnHover(true)}
+              onMouseLeave={() => setBtnHover(false)}
               style={{
-                fontSize: '0.75rem',
-                fontWeight: 500,
-                color: 'var(--color-accent)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                padding: '5px 11px',
+                borderRadius: 980,
+                background: btnHover ? bg : 'var(--color-surface-2)',
+                color: btnHover ? text : 'var(--color-label-2)',
+                fontSize: '0.72rem',
+                fontWeight: 600,
+                transition: 'background 180ms ease, color 180ms ease',
+                opacity: 1,
               }}
             >
-              Détails →
+              <span>Détails</span>
+              <motion.span
+                animate={{ x: btnHover ? 3 : 0 }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+                style={{ display: 'inline-flex', alignItems: 'center' }}
+              >
+                <ArrowRightIcon width={13} height={13} />
+              </motion.span>
             </Link>
           </div>
         </div>
