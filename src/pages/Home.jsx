@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import api from '../services/api'
 import PokeCard from '../components/PokeCard'
 import Pagination from '../components/Pagination'
@@ -33,24 +34,81 @@ function Home() {
         setLoading(false)
       })
       .catch(() => {
-        setError('Erreur lors du chargement')
+        setError('Impossible de charger les données.')
         setLoading(false)
       })
   }, [page])
 
   return (
     <div>
-      <h1>Mon pokedex</h1>
-      {loading && <p>Chargement...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {!loading && !error && pokemons.length === 0 && <p>Aucun pokemon disponible.</p>}
-      {pokemons.map((pokemon) => (
-        <PokeCard key={pokemon.id} pokemon={pokemon} />
-      ))}
+      {/* Page title */}
+      <div style={{ marginBottom: 'var(--s8)' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
+          fontWeight: 700,
+          letterSpacing: '-0.03em',
+          color: 'var(--color-label)',
+        }}>
+          Mon Pokédex
+        </h1>
+        <p style={{ marginTop: 'var(--s2)', fontSize: '0.9rem', color: 'var(--color-label-2)' }}>
+          {pokemons.length > 0 ? `Page ${page} · ${pokemons.length} pokémons` : ' '}
+        </p>
+      </div>
+
+      {/* States */}
+      {loading && (
+        <div style={{ textAlign: 'center', padding: 'var(--s16)', color: 'var(--color-label-2)', fontSize: '0.9rem' }}>
+          Chargement…
+        </div>
+      )}
+      {error && (
+        <div style={{
+          padding: 'var(--s4) var(--s5)',
+          borderRadius: 'var(--r-md)',
+          background: '#fff5f5',
+          color: 'var(--color-destructive)',
+          fontSize: '0.875rem',
+        }}>
+          {error}
+        </div>
+      )}
+      {!loading && !error && pokemons.length === 0 && (
+        <p style={{ color: 'var(--color-label-2)', fontSize: '0.9rem' }}>Aucun pokémon disponible.</p>
+      )}
+
+      {/* Grid */}
+      {!loading && !error && (
+        <motion.div
+          key={page}
+          initial="hidden"
+          animate="visible"
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.03 } } }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+            gap: 'var(--s4)',
+          }}
+        >
+          {pokemons.map((pokemon) => (
+            <motion.div
+              key={pokemon.id}
+              variants={{
+                hidden:  { opacity: 0, y: 12 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] } },
+              }}
+            >
+              <PokeCard pokemon={pokemon} />
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+
       <Pagination
         page={page}
-        onPrev={() => setPage(page - 1)}
-        onNext={() => setPage(page + 1)}
+        onPrev={() => { setPage(page - 1); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+        onNext={() => { setPage(page + 1); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
         disablePrev={page === 1}
         disableNext={!hasNext}
       />
