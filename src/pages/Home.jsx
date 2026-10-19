@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import api from '../services/api'
 import PokeCard from '../components/PokeCard'
+import CardSkeleton from '../components/CardSkeleton'
 import Pagination from '../components/Pagination'
 
 const LIMIT = 20
@@ -59,8 +60,14 @@ function Home() {
 
       {/* States */}
       {loading && (
-        <div style={{ textAlign: 'center', padding: 'var(--s16)', color: 'var(--color-label-2)', fontSize: '0.9rem' }}>
-          Chargement…
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+          gap: 'var(--s4)',
+        }}>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
         </div>
       )}
       {error && (
